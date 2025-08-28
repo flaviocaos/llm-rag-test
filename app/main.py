@@ -18,9 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-db_manager = ChromaDBManager(CHROMADB_PATH)
+db_manager = ChromaDBManager()
 embedding_generator = EmbeddingGenerator(EMBEDDING_MODEL)
-rag_pipeline = RAGPipeline(db_manager, embedding_generator, OPENROUTER_API_KEY, MODEL_SLUG)
+rag_pipeline = RAGPipeline()
 
 
 @app.get("/")
