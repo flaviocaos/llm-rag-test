@@ -1,56 +1,84 @@
-# Technical Test: Simple RAG System
 
-Welcome! The goal of this challenge is to build a simple Retrieval-Augmented Generation (RAG) system from scratch. You'll create a basic API that can store documents, search for relevant information, and answer questions based on the stored content.
+# Technical Test: Simple RAG System (Entrega – Flávio Antonio Oliveira da Silva)
 
+Este repositório contém minha implementação do desafio técnico de **Retrieval-Augmented Generation (RAG)** solicitado pela Action Labs.
 
-## Core Technologies
+A API foi construída em **Python + FastAPI**, utilizando **ChromaDB** como vetor DB e embeddings com **Sentence Transformers**.  
+Também inclui **modo offline** (sem internet/sem chave de API) para facilitar a avaliação.
 
-- **ChromaDB** for vector storage
-- **all-MiniLM-L6-v2** for embeddings  
-- **OpenRouter** for LLM responses
+---
 
-## Required Functionalities
+## ⚙️ Tecnologias
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Uvicorn](https://www.uvicorn.org/)
+- [ChromaDB](https://docs.trychroma.com/)
+- [Sentence Transformers](https://www.sbert.net/)
+- [httpx](https://www.python-httpx.org/)
 
-### 1. Add Documents
-**POST /add_document**
-- Take text input
-- Generate embedding with all-MiniLM-L6-v2
-- Store in ChromaDB
+---
 
-### 2. Search  
-**GET /search?query=...**
-- Generate query embedding
-- Find similar documents in ChromaDB
-- Return matches with scores
+## ▶️ Como rodar
 
-### 3. RAG Chat
-**POST /chat**
-- Search for relevant context
-- Send context + question to OpenRouter
-- Return answer with sources
-
-## Quick Start
-
+### 1. Clonar e instalar dependências
 ```bash
-# Install
+git clone https://github.com/flaviocaos/llm-rag-test.git
+cd llm-rag-test
+python -m venv .venv
+source .venv/Scripts/activate   # (Windows Git Bash)
 pip install -r requirements.txt
 
-# Setup .env
-OPENROUTER_API_KEY=your_key_here
-CHROMADB_PATH=./chroma_db
-EMBEDDING_MODEL=all-MiniLM-L6-v2
-MODEL_SLUG=openai/gpt-3.5-turbo
 
-# Run
+2. Rodar em modo offline (sem chave de API)
+export FAKE_EMBEDDINGS=1
+export FAKE_LLM=1
+export CHROMADB_PATH=./chroma_db
 uvicorn app.main:app --reload
-```
 
-## Your Task & Evaluation
 
-  * **Implementation**: Your primary task is to complete the logic in the files marked with `TODO` comments (`database.py`, `embeddings.py`, `rag.py`).
-  * **Evaluation**: Your submission will be evaluated on **correctness**, **code quality**, and the application of **software engineering best practices** (e.g., clarity, modularity, error handling, guardrails).
-  * **Freedom**: You are free to add any dependencies you see fit. We want you to use your best judgment as you would on a real project.
+Acesse: http://localhost:8000/docs
 
-## Submission
+3. Rodar em modo online (com OpenRouter)
 
-To submit, create a new public repository containing your solution and share the link with us. Good luck! 😄
+Crie um .env:
+
+OPENROUTER_API_KEY=coloque_sua_chave_aqui
+MODEL_SLUG=openai/gpt-3.5-turbo
+CHROMADB_PATH=./chroma_db
+FAKE_LLM=0
+FAKE_EMBEDDINGS=0
+
+
+E rode:
+
+uvicorn app.main:app --reload
+
+Endpoints
+POST /add_document
+{
+  "text": "A Action Labs é especializada em IA aplicada.",
+  "metadata": {"source": "about_action_labs"}
+}
+
+GET /search
+query=Em que a Action Labs é boa?&k=3
+
+POST /chat
+{
+  "question": "Qual é a especialidade da empresa?",
+  "k": 3
+}
+
+Extras implementados
+
+Modo offline com FAKE_EMBEDDINGS e FAKE_LLM
+
+Compatibilidade com imports originais (ChromaDBManager, EmbeddingGenerator)
+
+Testes automatizados (pytest)
+
+Dockerfile para container
+
+CI no GitHub Actions (lint + testes + build)
+
+Autor: Flávio Antonio Oliveira da Silva
+Entrega: Processo Seletivo Action Labs
